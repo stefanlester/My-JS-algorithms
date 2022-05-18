@@ -59,3 +59,79 @@ function binarySearch(arr, ele) {
 
 console.log(binarySearch([1, 2, 3, 4, 5, 6, 7, 8, 9, 100], 10))
 
+// Recursive
+function binarySearchRecursive(arr, ele, left=0, right=arr.length-1) {
+
+    if(left > right)  {
+        return -1
+    }
+
+  const midPoint = Math.floor((left + right) / 2)
+
+  if(arr[midPoint] === ele) {
+      return midPoint
+  }
+
+  if(ele > arr[midPoint]) {
+        return binarySearch(arr, ele, midPoint + 1, right)
+  }
+
+  if(num < arr[midPoint]) {
+      return binarySearch(arr, ele, left, midPoint -1)
+  }
+}
+
+
+// naive algorithm or approach, )(n*m)
+function subStrSearch(long, short){
+// saalik
+// ali
+let matches = {}
+for(let i = 0; i < long.length; i++) {
+
+  for(let j = 0; j < short.length; j++) {
+
+    if (short[j] !== long[i+j]) {
+      break
+    }
+
+    if(j === short.length - 1) {
+      matches[short] = (matches[short] || 0) + 1
+    }
+
+  }
+
+}
+  return matches
+}
+
+
+console.log(subStrSearch("there are many students there", "re"))
+
+
+// Building the Table
+function matchTable(word) {
+let arr = Array.from({ length: word.length }).fill(0);
+let suffixEnd = 1;
+let prefixEnd = 0;
+while (suffixEnd < word.length) {
+  if (word[suffixEnd] === word[prefixEnd]) {
+    // we can build a longer prefix based on this suffix
+    // store the length of this longest prefix
+    // move prefixEnd and suffixEnd
+    prefixEnd += 1;
+    arr[suffixEnd] = prefixEnd;
+    suffixEnd += 1;
+  } else if (word[suffixEnd] !== word[prefixEnd] && prefixEnd !== 0) {
+    // there's a mismatch, so we can't build a larger prefix
+    // move the prefixEnd to the position of the next largest prefix
+    prefixEnd = arr[prefixEnd - 1];
+  } else {
+    // we can't build a proper prefix with any of the proper suffixes
+    // let's move on
+    arr[suffixEnd] = 0;
+    suffixEnd += 1;
+  }
+}
+return arr;
+}
