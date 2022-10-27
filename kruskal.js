@@ -12,108 +12,108 @@
 
 class Graph {
 
-    constructor(vertices) {
-       this.vertices = vertices
-       this.graph = []
-       this.parent = [...Array(vertices)].map((x, idx) => idx);
-       this.rank = Array(vertices).fill(1);
-    }
+   constructor(vertices) {
+      this.vertices = vertices
+      this.graph = []
+      this.parent = [...Array(vertices)].map((x, idx) => idx);
+      this.rank = Array(vertices).fill(1);
+   }
 
 
-    addEdge(u, v, w) {
+   addEdge(u, v, w) {
       this.graph.push([u, v, w])
-    }
+   }
 
-    // Finds Set(parent or representative) of given item x
-    find(x) {
+   // Finds Set(parent or representative) of given item x
+   find(x) {
 
-       if(this.parent[x] === x) {
+      if (this.parent[x] === x) {
          return this.parent[x];
-       }
+      }
 
-       //Finds the representative of the set that x is an element of
+      //Finds the representative of the set that x is an element of
 
-        // we recursively call Find on its parent
-       let result = this.find(this.parent[x]);
+      // we recursively call Find on its parent
+      let result = this.find(this.parent[x]);
 
-       // path compression
-       // move i's node directly under the representative of this Set
-       this.parent[x] = result;
+      // path compression
+      // move i's node directly under the representative of this Set
+      this.parent[x] = result;
 
-       return this.parent[x];
-    }
+      return this.parent[x];
+   }
 
-    // Do union of two sets represented by x and y.
-    union(x, y) {
+   // Do union of two sets represented by x and y.
+   union(x, y) {
 
-       const xSet = this.find(x);
-       const ySet = this.find(y);
+      const xSet = this.find(x);
+      const ySet = this.find(y);
 
-       // both x and y belong to same set
-       if(xSet === ySet) {
-          return
-       }
+      // both x and y belong to same set
+      if (xSet === ySet) {
+         return
+      }
 
 
-       // Union by Rank
-       // Put smaller ranked item under bigger ranked item if ranks are different
-       if(this.rank[xSet] < this.rank[ySet]) {
-          this.parent[xSet] = ySet
-       } else if(this.rank[ySet] < xSet) {
+      // Union by Rank
+      // Put smaller ranked item under bigger ranked item if ranks are different
+      if (this.rank[xSet] < this.rank[ySet]) {
+         this.parent[xSet] = ySet
+      } else if (this.rank[ySet] < xSet) {
          this.parent[ySet] = xSet
-       } else {
+      } else {
          // If ranks are same, then move y under x (doesn't matter which one goes where) and increment rank of x's tree;
 
          this.parent[ySet] = xSet;
          this.rank[xSet] = this.rank[xSet] + 1;
-       }
-    }
+      }
+   }
 }
 
 
 
 function kruskalsAlgorithm(graph) {
-     let vertices = graph.vertices // number of vertices or nodes in the graph;
-     let m = vertices - 1 // number of edges in spanning tree
+   let vertices = graph.vertices // number of vertices or nodes in the graph;
+   let m = vertices - 1 // number of edges in spanning tree
 
-     let mstEdges = [] // length m
-     let edgeCount = 0;
-     let mstCost = 0;
+   let mstEdges = [] // length m
+   let edgeCount = 0;
+   let mstCost = 0;
 
-     // sort the graph in ascending order of edge weight
+   // sort the graph in ascending order of edge weight
 
-     graph.graph.sort((a, b) => a[2] - b[2]);
-
-
-     // Create V(no. of vertices) subsets with single elements(vertex);
-     let parent = graph.parent;
-     let rank = graph.rank
+   graph.graph.sort((a, b) => a[2] - b[2]);
 
 
-     let i = 0;
-     // Number of edges to be taken is equal to V-1
-     while (edgeCount < m) {
+   // Create V(no. of vertices) subsets with single elements(vertex);
+   let parent = graph.parent;
+   let rank = graph.rank
 
-       // Pick the smallest edge and increment the index for next iteration;
-       let minEdge = graph.graph[i];
-       i = i + 1
-       let [u, v, w] = minEdge;
 
-       let x = graph.find(u)
-       let y = graph.find(v)
+   let i = 0;
+   // Number of edges to be taken is equal to V-1
+   while (edgeCount < m) {
 
-       // If including this edge doesn't cause cycle(i.e, x !== y), include it in result
-       if(x !== y) {
-          mstEdges.push(minEdge);
-          mstCost += w
-          graph.union(x, y)
-          edgeCount += 1
-       } // else discard the edge
+      // Pick the smallest edge and increment the index for next iteration;
+      let minEdge = graph.graph[i];
+      i = i + 1
+      let [u, v, w] = minEdge;
 
-     }
+      let x = graph.find(u)
+      let y = graph.find(v)
 
-     console.log(mstCost)
-     return mstEdges;
+      // If including this edge doesn't cause cycle(i.e, x !== y), include it in result
+      if (x !== y) {
+         mstEdges.push(minEdge);
+         mstCost += w
+         graph.union(x, y)
+         edgeCount += 1
+      } // else discard the edge
+
+   }
+
+   console.log(mstCost)
+   return mstEdges;
 }
 
 
